@@ -1,5 +1,6 @@
 from django.urls import path
+from . import views
 
 urlpatterns = [
-    # za sad prazno, samo da include radi
+    path("", views.home, name="home"),
 ]
