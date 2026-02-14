@@ -29,6 +29,9 @@ def register(request):
     else:
         form = UserCreationForm()
 
+    for field in form.fields.values():
+        field.widget.attrs.update({"class": "form-control"})
+
     return render(request, "accounts/register.html", {"form": form})
 
 
