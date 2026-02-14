@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+{% block title %}Mentor dashboard{% endblock %}
+{% block content %}
+  <h1>Mentor dashboard</h1>
+  <p>Ulogirana si kao: {{ request.user.username }}</p>
+  <p><a href="/auth/logout/">Odjava</a></p>
+{% endblock %}

@@ -1,0 +1,14 @@
+<nav style="padding: 12px; border-bottom: 1px solid #ddd; display:flex; gap:12px;">
+    <a href="/" style="text-decoration:none; font-weight:600;">FERIT konzultacije</a>
+  
+    <div style="margin-left:auto; display:flex; gap:12px;">
+      {% if user.is_authenticated %}
+        <a href="/accounts/dashboard/">Dashboard</a>
+        <a href="/auth/logout/">Odjava</a>
+      {% else %}
+        <a href="/auth/login/">Prijava</a>
+        <a href="{% url 'register' %}">Registracija</a>
+      {% endif %}
+    </div>
+  </nav>
+  

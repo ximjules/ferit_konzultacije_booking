@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+{% block title %}Admin dashboard{% endblock %}
+{% block content %}
+  <h1>Admin dashboard</h1>
+  <p>Ulogirana si kao: {{ request.user.username }}</p>
+  <p><a href="/admin/">Django admin</a></p>
+  <p><a href="/auth/logout/">Odjava</a></p>
+{% endblock %}

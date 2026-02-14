@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Registracija{% endblock %}
+
+{% block content %}
+  <h1>Registracija (student)</h1>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Registriraj se</button>
+  </form>
+
+  <p>Već imaš račun? <a href="/auth/login/">Prijava</a></p>
+{% endblock %}

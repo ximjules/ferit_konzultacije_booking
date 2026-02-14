@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+{% block title %}Student dashboard{% endblock %}
+{% block content %}
+  <h1>Student dashboard</h1>
+  <p>Ulogirana si kao: {{ request.user.username }}</p>
+  <p><a href="/auth/logout/">Odjava</a></p>
+{% endblock %}
