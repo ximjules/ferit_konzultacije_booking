@@ -1,12 +1,10 @@
-from django.shortcuts import render
-
-# Create your views here.
 from django.contrib import messages
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import Group
 from django.shortcuts import redirect, render
+from django.http import HttpResponseForbidden
 
 
 def register(request):
@@ -46,3 +44,10 @@ def dashboard(request):
 
     # default: student
     return render(request, "accounts/dashboard_student.html")
+
+
+
+
+def is_mentor(user):
+    return user.is_authenticated and (user.is_superuser or user.groups.filter(name="mentor").exists())
+

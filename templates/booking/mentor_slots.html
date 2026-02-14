@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Moji termini{% endblock %}
+
+{% block content %}
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="h4 mb-0">Moji termini</h1>
+    <a class="btn btn-primary btn-sm" href="{% url 'mentor_add_slot' %}">+ Dodaj termin</a>
+  </div>
+
+  {% if slots %}
+    <div class="list-group">
+      {% for s in slots %}
+        <div class="list-group-item d-flex justify-content-between align-items-center">
+          <div>
+            <div class="fw-semibold">{{ s.start_at }} – {{ s.end_at }}</div>
+            <small class="text-muted">Aktivan: {{ s.is_active }}</small>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="alert alert-info">Još nemaš dodanih termina.</div>
+  {% endif %}
+{% endblock %}
