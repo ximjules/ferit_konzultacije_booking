@@ -1,0 +1,9 @@
+{% if messages %}
+  <div style="max-width: 900px; margin: 12px auto; padding: 0 12px;">
+    {% for message in messages %}
+      <div style="padding:10px; border:1px solid #ddd; margin-bottom:8px;">
+        {{ message }}
+      </div>
+    {% endfor %}
+  </div>
+{% endif %}
