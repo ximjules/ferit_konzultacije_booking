@@ -4,10 +4,15 @@ from django.http import HttpResponseForbidden
 from django.shortcuts import redirect, render, get_object_or_404
 from django.utils import timezone
 from django.db import transaction
+from django.views.generic import ListView, DetailView
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.urls import reverse
+from django.core.exceptions import ValidationError
 
 from .models import AvailabilitySlot, Booking
 from accounts.views import is_mentor
 from datetime import datetime
+from .forms import BookingForm
 
 
 @login_required
@@ -71,45 +76,44 @@ def mentor_add_slot(request):
     return render(request, "booking/mentor_add_slot.html")
 
 
-@login_required
-def available_slots(request):
-    """
-    Lista svih slobodnih (ne-bookiranih) termina u budućnosti.
-    """
-    slots = AvailabilitySlot.objects.filter(
-        start_at__gt=timezone.now()
-    ).exclude(
-        bookings__status='booked'
-    ).order_by("start_at")
-    return render(request, "booking/available_slots.html", {"slots": slots})
+class SlotListView(ListView):
+    model = AvailabilitySlot
+    template_name = "booking/slot_list.html"
+    context_object_name = "slots"
+    queryset = AvailabilitySlot.objects.filter(is_active=True, end_at__gt=None).order_by("start_at")
+
+
+class SlotDetailView(DetailView):
+    model = AvailabilitySlot
+    template_name = "booking/slot_detail.html"
+    context_object_name = "slot"
 
 
 @login_required
-def book_slot(request, slot_id):
-    """
-    Student rezervira termin. Ako je već bookiran, vraćamo poruku.
-    """
-    try:
-        with transaction.atomic():
-            # koristimo select_for_update kako bismo "zaključali" redak termina u DB dok provjeravamo/stvaramo rezervaciju
-            slot = AvailabilitySlot.objects.select_for_update().get(pk=slot_id)
+def book_slot(request, slot_pk):
+    slot = get_object_or_404(AvailabilitySlot, pk=slot_pk)
+    if request.method == "POST":
+        form = BookingForm(request.POST)
+        if form.is_valid():
+            booking = Booking(slot=slot, student=request.user)
+            try:
+                booking.full_clean()
+                booking.save()
+                messages.success(request, "Rezervacija uspješno napravljena.")
+                return redirect(reverse("booking:my_bookings"))
+            except ValidationError as e:
+                form.add_error(None, e)
+    else:
+        form = BookingForm()
+    return render(request, "booking/booking_confirm.html", {"form": form, "slot": slot})
 
-            # samo budući termini
-            if slot.start_at <= timezone.now():
-                messages.error(request, "Ne možeš rezervirati prošli ili tekući termin.")
-                return redirect("available_slots")
 
-            # provjeri postoji li aktivna rezervacija (booked) - ponovno pod lockom
-            if slot.bookings.filter(status='booked').exists():
-                messages.error(request, "Ovaj termin je već rezerviran.")
-                return redirect("available_slots")
+class MyBookingsView(LoginRequiredMixin, ListView):
+    template_name = "booking/my_bookings.html"
+    context_object_name = "bookings"
 
-            # kreiraj rezervaciju
-            Booking.objects.create(slot=slot, student=request.user, status='booked')
-            messages.success(request, "Termin uspješno rezerviran.")
-            return redirect("available_slots")
-    except AvailabilitySlot.DoesNotExist:
-        return redirect("available_slots")
+    def get_queryset(self):
+        return Booking.objects.filter(student=self.request.user).order_by("-created_at")
 
 
 def home(request):

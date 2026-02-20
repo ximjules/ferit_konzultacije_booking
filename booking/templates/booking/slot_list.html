@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Available slots</h1>
+<ul>
+  {% for slot in slots %}
+    <li>
+      <a href="{% url 'booking:slot_detail' slot.pk %}">
+        {{ slot.mentor }} — {{ slot.start_at|date:"Y-m-d H:i" }} - {{ slot.end_at|time:"H:i" }}
+      </a>
+    </li>
+  {% empty %}
+    <li>No slots available.</li>
+  {% endfor %}
+</ul>
+{% endblock %}

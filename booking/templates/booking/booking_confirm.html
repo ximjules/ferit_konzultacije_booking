@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Confirm booking</h1>
+<p>Slot: {{ slot.mentor }} — {{ slot.start_at|date:"Y-m-d H:i" }}</p>
+<form method="post">
+  {% csrf_token %}
+  {{ form.non_field_errors }}
+  <button type="submit">Confirm booking</button>
+  <a href="{% url 'booking:slot_detail' slot.pk %}">Cancel</a>
+</form>
+{% endblock %}
