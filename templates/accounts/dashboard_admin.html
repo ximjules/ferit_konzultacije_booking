@@ -3,6 +3,10 @@
 {% block content %}
   <h1>Admin dashboard</h1>
   <p>Ulogirana si kao: {{ request.user.username }}</p>
-  <p><a href="/admin/">Django admin</a></p>
-  <p><a href="/auth/logout/">Odjava</a></p>
+  <p><a href="{% url 'admin:index' %}">Django admin</a></p>
+
+  <form method="post" action="{% url 'accounts:logout' %}">
+    {% csrf_token %}
+    <button class="btn btn-outline-secondary btn-sm" type="submit">Odjava</button>
+  </form>
 {% endblock %}

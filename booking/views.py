@@ -10,7 +10,6 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 from django.views.generic import DetailView, ListView
 
-from .forms import BookingForm
 from .models import AvailabilitySlot, Booking
 from .utils import is_mentor, is_student
 
@@ -20,7 +19,6 @@ def mentor_slots(request):
     if not is_mentor(request.user):
         return HttpResponseForbidden("Nemaš pristup ovoj stranici.")
 
-    # dodamo info ima li booking
     slots = (
         AvailabilitySlot.objects.filter(mentor=request.user)
         .annotate(bookings_count=Count("bookings"))
@@ -71,6 +69,7 @@ def mentor_add_slot(request):
             mentor=request.user,
             start_at=start_dt,
             end_at=end_dt,
+            is_active=True,
         )
         messages.success(request, "Termin uspješno dodan.")
         return redirect("booking:mentor_slots")
@@ -84,7 +83,6 @@ class SlotListView(ListView):
     context_object_name = "slots"
 
     def get_queryset(self):
-        # aktivni termini koji nisu završili i NEMAJU booking
         return (
             AvailabilitySlot.objects.filter(is_active=True, end_at__gt=timezone.now())
             .annotate(bookings_count=Count("bookings"))
@@ -107,26 +105,20 @@ def book_slot(request, slot_pk):
     if not is_student(request.user):
         return HttpResponseForbidden("Samo studenti mogu rezervirati termine.")
 
-    # ako već postoji booking -> ne može se rezervirati
-    if Booking.objects.filter(slot=slot).exists():
+    # Termin je rezerviran ako postoji booking
+    if Booking.objects.filter(slot=slot, status="booked").exists():
         messages.error(request, "Ovaj termin je već rezerviran.")
         return redirect("booking:home")
 
     if request.method == "POST":
-        form = BookingForm(request.POST)
-        if form.is_valid():
-            booking = Booking(slot=slot, student=request.user)
-            try:
-                booking.full_clean()
-                booking.save()
-                messages.success(request, "Rezervacija uspješno napravljena.")
-                return redirect("booking:my_bookings")
-            except ValidationError as e:
-                form.add_error(None, e)
-    else:
-        form = BookingForm()
+        try:
+            Booking.objects.create(slot=slot, student=request.user, status="booked")
+            messages.success(request, "Rezervacija uspješno napravljena.")
+            return redirect("booking:my_bookings")
+        except ValidationError as e:
+            messages.error(request, str(e))
 
-    return render(request, "booking/booking_confirm.html", {"form": form, "slot": slot})
+    return render(request, "booking/booking_confirm.html", {"slot": slot})
 
 
 class MyBookingsView(LoginRequiredMixin, ListView):

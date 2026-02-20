@@ -20,44 +20,33 @@
             <a class="nav-link" href="{% url 'accounts:dashboard' %}">Dashboard</a>
           </li>
 
-          {# Student #}
-          {% if user.groups.all|length > 0 and user.groups.all.0.name == "student" %}
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'booking:my_bookings' %}">Moje rezervacije</a>
-            </li>
-          {% endif %}
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'booking:my_bookings' %}">Moje rezervacije</a>
+          </li>
 
-          {# Mentor ili Admin #}
+          {# Mentor linkovi (ako je u mentor grupi) #}
+          {% for g in user.groups.all %}
+            {% if g.name == "mentor" %}
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'booking:mentor_slots' %}">Moji termini</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'booking:mentor_add_slot' %}">Dodaj termin</a>
+              </li>
+            {% endif %}
+          {% endfor %}
+
+          {# Admin link #}
           {% if user.is_superuser %}
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'booking:mentor_slots' %}">Moji termini</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'booking:mentor_add_slot' %}">Dodaj termin</a>
-            </li>
             <li class="nav-item">
               <a class="nav-link" href="{% url 'admin:index' %}">Admin</a>
             </li>
-          {% else %}
-            {# ako nije superuser, provjeri je li u mentor grupi #}
-            {% for g in user.groups.all %}
-              {% if g.name == "mentor" %}
-                <li class="nav-item">
-                  <a class="nav-link" href="{% url 'booking:mentor_slots' %}">Moji termini</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="{% url 'booking:mentor_add_slot' %}">Dodaj termin</a>
-                </li>
-              {% endif %}
-            {% endfor %}
           {% endif %}
 
           <li class="nav-item">
             <form method="post" action="{% url 'accounts:logout' %}" class="d-inline">
               {% csrf_token %}
-              <button type="submit" class="btn btn-outline-secondary btn-sm">
-                Odjava
-              </button>
+              <button type="submit" class="btn btn-outline-secondary btn-sm">Odjava</button>
             </form>
           </li>
 
