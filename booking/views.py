@@ -142,3 +142,19 @@ def home(request):
         .order_by("start_at")
     )
     return render(request, "booking/home.html", {"slots": slots})
+
+
+@login_required
+def cancel_booking(request, booking_id):
+    if not is_student(request.user):
+        return HttpResponseForbidden("Samo studenti mogu otkazati rezervaciju.")
+
+    booking = get_object_or_404(Booking, id=booking_id, student=request.user)
+
+    if request.method == "POST":
+        booking.status = "cancelled"
+        booking.save()
+        messages.success(request, "Rezervacija je otkazana.")
+        return redirect("booking:my_bookings")
+
+    return render(request, "booking/cancel_booking_confirm.html", {"booking": booking})

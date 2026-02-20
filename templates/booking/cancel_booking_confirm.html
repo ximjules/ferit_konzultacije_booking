@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Otkazivanje rezervacije{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 700px;">
+  <h1 class="h4 mb-3">Otkazivanje rezervacije</h1>
+
+  <div class="card shadow-sm mb-3">
+    <div class="card-body">
+      <div><span class="text-muted">Mentor:</span> <b>{{ booking.slot.mentor.username }}</b></div>
+      <div>
+        <span class="text-muted">Termin:</span>
+        <b>{{ booking.slot.start_at|date:"d.m.Y. H:i" }}</b> – <b>{{ booking.slot.end_at|date:"H:i" }}</b>
+      </div>
+      <div class="text-muted small mt-2">
+        Jesi li sigurna da želiš otkazati ovu rezervaciju?
+      </div>
+    </div>
+  </div>
+
+  <form method="post" class="d-flex gap-2">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">Da, otkaži</button>
+    <a class="btn btn-outline-secondary" href="{% url 'booking:my_bookings' %}">Ne, odustani</a>
+  </form>
+</div>
+{% endblock %}

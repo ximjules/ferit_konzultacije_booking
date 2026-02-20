@@ -6,7 +6,9 @@
 
   <div class="d-flex justify-content-between align-items-center mb-3">
     <h1 class="h4 mb-0">Moje rezervacije</h1>
-    <a class="btn btn-outline-primary btn-sm" href="{% url 'booking:home' %}">Natrag na termine</a>
+    <a class="btn btn-outline-primary btn-sm" href="{% url 'booking:home' %}">
+      Natrag na termine
+    </a>
   </div>
 
   {% if bookings %}
@@ -18,18 +20,37 @@
             <div class="text-muted small">
               {{ b.slot.start_at|date:"d.m.Y. H:i" }} – {{ b.slot.end_at|date:"H:i" }}
             </div>
-            <div class="small">
-              Status: <span class="badge bg-secondary">{{ b.get_status_display }}</span>
+
+            <div class="mt-1">
+              {% if b.status == "booked" %}
+                <span class="badge bg-success">Rezervirano</span>
+              {% elif b.status == "cancelled" %}
+                <span class="badge bg-secondary">Otkazano</span>
+              {% else %}
+                <span class="badge bg-secondary">{{ b.get_status_display }}</span>
+              {% endif %}
             </div>
           </div>
-          <div class="text-muted small">
-            Kreirano: {{ b.created_at|date:"d.m.Y. H:i" }}
+
+          <div class="text-end">
+            <div class="text-muted small mb-2">
+              Kreirano: {{ b.created_at|date:"d.m.Y. H:i" }}
+            </div>
+
+            {% if b.status == "booked" %}
+              <a class="btn btn-sm btn-outline-danger"
+                 href="{% url 'booking:cancel_booking' booking_id=b.id %}">
+                Otkaži
+              </a>
+            {% endif %}
           </div>
         </div>
       {% endfor %}
     </div>
   {% else %}
-    <div class="alert alert-info">Trenutno nemaš rezervacija.</div>
+    <div class="alert alert-info">
+      Trenutno nemaš rezervacija.
+    </div>
   {% endif %}
 
 </div>
