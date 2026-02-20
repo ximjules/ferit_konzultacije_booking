@@ -1,6 +1,76 @@
 {% extends "base.html" %}
 
+{% block title %}FERIT konzultacije{% endblock %}
+
 {% block content %}
-  <h1>FERIT konzultacije</h1>
-  <p>Struktura radi ✅</p>
+<div class="container">
+
+  <!-- HERO -->
+  <div class="py-4 mb-4 border-bottom">
+    <h1 class="display-6 fw-bold">FERIT konzultacije</h1>
+    <p class="lead text-muted mb-0">
+      Sustav za rezervaciju konzultacija između studenata i mentora.
+    </p>
+  </div>
+
+  <!-- INFO -->
+  <div class="row mb-4">
+    <div class="col-md-8">
+      <p>
+        Ova web aplikacija omogućuje studentima jednostavnu prijavu na konzultacije,
+        dok mentorima omogućuje upravljanje dostupnim terminima.
+      </p>
+    </div>
+    <div class="col-md-4 text-md-end">
+      {% if user.is_authenticated %}
+        <span class="badge bg-success">Prijavljeni ste</span>
+      {% else %}
+        <span class="badge bg-secondary">Niste prijavljeni</span>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- DOSTUPNI TERMINI -->
+  <h2 class="h4 mb-3">Dostupni termini</h2>
+
+  {% if slots %}
+    <div class="list-group">
+      {% for slot in slots %}
+        <div class="list-group-item d-flex justify-content-between align-items-center">
+          <div>
+            <div class="fw-semibold">
+              {{ slot.mentor.username }}
+            </div>
+            <div class="text-muted small">
+              {{ slot.start_at|date:"d.m.Y. H:i" }} – {{ slot.end_at|date:"H:i" }}
+            </div>
+          </div>
+
+          <div class="d-flex gap-2">
+            {% if user.is_authenticated %}
+              <a href="{% url 'booking:book_slot' slot_pk=slot.pk %}"
+                 class="btn btn-sm btn-primary">
+                Prijavi se
+              </a>
+            {% else %}
+              <a href="{% url 'login' %}" class="btn btn-sm btn-outline-secondary">
+                Prijava
+              </a>
+            {% endif %}
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="alert alert-info">
+      Trenutno nema dostupnih termina za konzultacije.
+    </div>
+  {% endif %}
+
+  <!-- FOOTER INFO -->
+  <div class="mt-5 pt-3 border-top text-muted small">
+    Projekt iz kolegija <b>Programsko inženjerstvo</b> – FERIT
+  </div>
+
+</div>
 {% endblock %}

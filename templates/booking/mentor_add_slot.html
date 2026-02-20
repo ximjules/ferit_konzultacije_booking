@@ -2,24 +2,24 @@
 {% block title %}Dodaj termin{% endblock %}
 
 {% block content %}
-  <h1 class="h4 mb-3">Dodaj termin</h1>
+<h1 class="h3 mb-3">Dodaj termin</h1>
 
-  <form method="post" class="card card-body" style="max-width: 520px;">
-    {% csrf_token %}
+<form method="post" class="card p-3">
+  {% csrf_token %}
 
-    <div class="mb-3">
-      <label class="form-label">Početak</label>
-      <input class="form-control" type="datetime-local" name="start_at" required>
-    </div>
+  <div class="mb-3">
+    <label class="form-label">Početak</label>
+    <input class="form-control" type="datetime-local" name="start_at" required>
+  </div>
 
-    <div class="mb-3">
-      <label class="form-label">Kraj</label>
-      <input class="form-control" type="datetime-local" name="end_at" required>
-    </div>
+  <div class="mb-3">
+    <label class="form-label">Kraj</label>
+    <input class="form-control" type="datetime-local" name="end_at" required>
+  </div>
 
-    <div class="d-flex gap-2">
-      <button class="btn btn-primary" type="submit">Spremi</button>
-      <a class="btn btn-outline-secondary" href="{% url 'mentor_slots' %}">Odustani</a>
-    </div>
-  </form>
+  <div class="d-flex gap-2">
+    <button class="btn btn-primary" type="submit">Spremi</button>
+    <a class="btn btn-outline-secondary" href="{% url 'booking:mentor_slots' %}">Odustani</a>
+  </div>
+</form>
 {% endblock %}
