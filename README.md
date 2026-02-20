@@ -39,12 +39,12 @@ python manage.py createsuperuser
 
 Admin:
   username: admin
-  password: admin123
+  password: ferit123
 
 Mentor:
   username: mentor1
-  password: mentor123
+  password: ferit123
 
 Student:
   username: student1
-  password: student123
+  password: ferit123
