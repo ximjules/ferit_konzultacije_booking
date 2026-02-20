@@ -2,12 +2,54 @@
 {% block title %}Prijava{% endblock %}
 
 {% block content %}
-  <h1>Prijava</h1>
-  <form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Prijavi se</button>
-  </form>
+<div class="row justify-content-center">
+  <div class="col-md-6 col-lg-5">
+    <div class="card shadow-sm">
+      <div class="card-body p-4">
+        <h1 class="h4 mb-3">Prijava</h1>
 
-  <p>Nemaš račun? <a href="{% url 'register' %}">Registriraj se</a></p>
+        <form method="post" novalidate>
+          {% csrf_token %}
+
+          {% if form.non_field_errors %}
+            <div class="alert alert-danger">
+              {{ form.non_field_errors }}
+            </div>
+          {% endif %}
+
+          <div class="mb-3">
+            <label class="form-label" for="{{ form.username.id_for_label }}">Korisničko ime</label>
+            {{ form.username }}
+            {% if form.username.errors %}<div class="text-danger small">{{ form.username.errors }}</div>{% endif %}
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label" for="{{ form.password.id_for_label }}">Lozinka</label>
+            {{ form.password }}
+            {% if form.password.errors %}<div class="text-danger small">{{ form.password.errors }}</div>{% endif %}
+          </div>
+
+          <button type="submit" class="btn btn-primary w-100">Prijavi se</button>
+        </form>
+
+        <hr class="my-4">
+
+        <p class="mb-0 small">
+          Nemaš račun?
+          <a href="{% url 'register' %}">Registriraj se</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Bootstrap klase na default Django auth formu
+  (function () {
+    const u = document.getElementById("id_username");
+    const p = document.getElementById("id_password");
+    if (u) u.classList.add("form-control");
+    if (p) p.classList.add("form-control");
+  })();
+</script>
 {% endblock %}

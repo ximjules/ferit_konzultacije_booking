@@ -1,10 +1,14 @@
+from django.contrib.auth.models import Group
+
 def is_mentor(user):
-    """
-    Jednostavna provjera: ako je user.is_staff ili pripada grupi 'mentors'.
-    Ako imaš propratni accounts app, možeš zamijeniti logiku.
-    """
+    """True ako je korisnik superuser ili pripada grupi 'mentor'."""
     if not user or not user.is_authenticated:
         return False
-    if getattr(user, "is_staff", False):
-        return True
-    return user.groups.filter(name="mentors").exists()
+    return user.is_superuser or user.groups.filter(name="mentor").exists()
+
+
+def is_student(user):
+    """Student je svaki autentificirani korisnik koji NIJE mentor/admin."""
+    if not user or not user.is_authenticated:
+        return False
+    return not is_mentor(user)

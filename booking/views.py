@@ -10,7 +10,7 @@ from django.urls import reverse
 from django.core.exceptions import ValidationError
 
 from .models import AvailabilitySlot, Booking
-from .utils import is_mentor
+from .utils import is_mentor, is_student
 from datetime import datetime
 from .forms import BookingForm
 
@@ -95,6 +95,10 @@ class SlotDetailView(DetailView):
 @login_required
 def book_slot(request, slot_pk):
     slot = get_object_or_404(AvailabilitySlot, pk=slot_pk)
+
+    # Samo studenti mogu rezervirati termine
+    if not is_student(request.user):
+        return HttpResponseForbidden("Samo studenti mogu rezervirati termine.")
     if request.method == "POST":
         form = BookingForm(request.POST)
         if form.is_valid():
