@@ -1,45 +1,70 @@
-{% load static %}
-<nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom mb-3">
+<nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
   <div class="container">
-    <a class="navbar-brand d-flex align-items-center gap-2" href="{% url 'booking:slot_list' %}">
-      <img src="{% static 'images/logo.png' %}" alt="logo" height="36">
-      <span>FERIT konzultacije</span>
-    </a>
+    <a class="navbar-brand fw-semibold" href="{% url 'booking:home' %}">FERIT konzultacije</a>
 
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav"
-            aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMain"
+            aria-controls="navMain" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
 
-    <div class="collapse navbar-collapse" id="mainNav">
+    <div class="collapse navbar-collapse" id="navMain">
       <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-2">
-        <li class="nav-item"><a class="nav-link" href="{% url 'booking:slot_list' %}">Termini</a></li>
+
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'booking:home' %}">Termini</a>
+        </li>
 
         {% if user.is_authenticated %}
-          <li class="nav-item"><a class="nav-link" href="{% url 'dashboard' %}">Dashboard</a></li>
 
-          {% if is_student %}
-            <li class="nav-item"><a class="nav-link" href="{% url 'booking:my_bookings' %}">Moje rezervacije</a></li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'accounts:dashboard' %}">Dashboard</a>
+          </li>
+
+          {# Student #}
+          {% if user.groups.all|length > 0 and user.groups.all.0.name == "student" %}
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'booking:my_bookings' %}">Moje rezervacije</a>
+            </li>
           {% endif %}
 
-          {% if is_mentor %}
-            <li class="nav-item"><a class="nav-link" href="{% url 'booking:mentor_slots' %}">Moji termini</a></li>
-            <li class="nav-item"><a class="nav-link" href="{% url 'booking:mentor_add_slot' %}">Dodaj termin</a></li>
-          {% endif %}
-
+          {# Mentor ili Admin #}
           {% if user.is_superuser %}
-            <li class="nav-item"><a class="nav-link" href="{% url 'admin:index' %}">Admin</a></li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'booking:mentor_slots' %}">Moji termini</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'booking:mentor_add_slot' %}">Dodaj termin</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'admin:index' %}">Admin</a>
+            </li>
+          {% else %}
+            {# ako nije superuser, provjeri je li u mentor grupi #}
+            {% for g in user.groups.all %}
+              {% if g.name == "mentor" %}
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'booking:mentor_slots' %}">Moji termini</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'booking:mentor_add_slot' %}">Dodaj termin</a>
+                </li>
+              {% endif %}
+            {% endfor %}
           {% endif %}
 
           <li class="nav-item">
-            <form action="{% url 'logout' %}" method="post" class="d-inline">
-              {% csrf_token %}
-              <button type="submit" class="btn btn-outline-secondary btn-sm">Odjava</button>
-            </form>
+            <a class="btn btn-outline-secondary btn-sm" href="{% url 'accounts:logout' %}">Odjava</a>
           </li>
+
         {% else %}
-          <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">Prijava</a></li>
-          <li class="nav-item"><a class="btn btn-primary btn-sm" href="{% url 'register' %}">Registracija</a></li>
+
+          <li class="nav-item">
+            <a class="btn btn-outline-primary btn-sm" href="{% url 'accounts:login' %}">Prijava</a>
+          </li>
+          <li class="nav-item">
+            <a class="btn btn-primary btn-sm" href="{% url 'accounts:register' %}">Registracija</a>
+          </li>
+
         {% endif %}
       </ul>
     </div>
