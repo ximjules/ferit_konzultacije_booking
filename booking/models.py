@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.db import models
+from django.utils import timezone
 
 User = settings.AUTH_USER_MODEL
 
@@ -26,32 +27,26 @@ class AvailabilitySlot(models.Model):
 
 
 class Booking(models.Model):
-    class Status(models.TextChoices):
-        PENDING = "PENDING", "Pending"
-        APPROVED = "APPROVED", "Approved"
-        REJECTED = "REJECTED", "Rejected"
-        CANCELLED = "CANCELLED", "Cancelled"
-        COMPLETED = "COMPLETED", "Completed"
+    """
+    Rezervacija termina. Povezana na AvailabilitySlot.
+    """
+    STATUS_CHOICES = [
+        ('booked', 'Booked'),
+        ('cancelled', 'Cancelled'),
+    ]
 
-    slot = models.OneToOneField(
-        AvailabilitySlot, on_delete=models.CASCADE, related_name="booking"
+    slot = models.ForeignKey(
+        'AvailabilitySlot',
+        on_delete=models.CASCADE,
+        related_name='bookings',
     )
     student = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name="bookings"
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='bookings',
     )
-
-    status = models.CharField(
-        max_length=20, choices=Status.choices, default=Status.PENDING
-    )
-
-    student_note = models.TextField(blank=True)
-    mentor_note = models.TextField(blank=True)
-
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-    class Meta:
-        ordering = ["-created_at"]
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='booked')
+    created_at = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
         return f"{self.student} -> {self.slot} ({self.status})"
