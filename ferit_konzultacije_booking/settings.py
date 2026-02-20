@@ -5,6 +5,8 @@ from django.utils import timezone
 from django.db import models
 from django.conf import settings
 
+from config.settings import BASE_DIR
+
 INSTALLED_APPS = [
     # ...existing apps...
     'booking',  # osiguraj da je tu
@@ -52,6 +54,11 @@ class Booking(models.Model):
     """
     Rezervacija termina. Povezana na AvailabilitySlot.
     """
+    STATUS_CHOICES = [
+        ('booked', 'Booked'),
+        ('cancelled', 'Cancelled'),
+    ]
+
     slot = models.ForeignKey(
         'AvailabilitySlot',
         on_delete=models.CASCADE,
@@ -64,11 +71,6 @@ class Booking(models.Model):
     )
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='booked')
     created_at = models.DateTimeField(default=timezone.now)
-
-    STATUS_CHOICES = [
-        ('booked', 'Booked'),
-        ('cancelled', 'Cancelled'),
-    ]
 
     def __str__(self):
         return f"{self.student} -> {self.slot} ({self.status})"
