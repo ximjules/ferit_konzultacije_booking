@@ -1,117 +1,158 @@
-:root{
-  /* boje prema opisu: tamnija plava, umjerena crvena, naglasak bijele */
-  --blue:    #0b2b48; /* tamno plava, ozbiljna */
-  --blue-600:#092536; /* hover/darker */
-  --red:     #c0392b; /* umjerena crvena, ne prejaka */
-  --red-700: #a5332a;
-  --white:   #ffffff;
-  --muted:   #6c757d;
-  --bg:      #f6f8fa; /* svijetla pozadina, white-heavy */
-  --card-bg: #ffffff;
-  --border:  #e6e9ee;
-  --text:    #0b1b2b;
-}
+/* =========================
+   FERIT THEME (addon)
+   white dominant + subtle red + darker blue
+   ========================= */
 
-/* Global */
-body{
-  background: var(--bg);
-  color: var(--text);
-  -webkit-font-smoothing:antialiased;
-  font-family: "Segoe UI", Roboto, Arial, sans-serif;
-}
-
-/* Header / brand */
-.site-header .brand{
-  display:flex;
-  align-items:center;
-  gap:.6rem;
-  text-decoration:none;
-  color:var(--blue);
-  padding:.6rem 0;
-}
-.site-header .logo{
-  height:44px;
-  width:auto;
-  display:block;
-  border-radius:4px; /* blagi zaobljeni rub na logu */
-  background:var(--white);
-  padding:2px;
-}
-
-/* Navbar */
-.navbar{
-  background: var(--white);
-  border-bottom:1px solid var(--border);
-}
-.navbar .navbar-brand{
-  display:flex;
-  align-items:center;
-  gap:.5rem;
-  color:var(--blue);
-  font-weight:600;
-}
-.navbar .nav-link{
-  color:var(--blue);
-  margin-left:.5rem;
-}
-.navbar .nav-link:hover{ color: var(--red); }
-
-/* Cards / lists */
-.card, .list-group-item{
-  background:var(--card-bg);
-  border:1px solid var(--border);
-  border-radius:8px;
-}
-
-/* Buttons */
-.btn-primary{
-  background: linear-gradient(180deg, var(--blue), var(--blue-600));
-  border-color: var(--blue-600);
-  color: var(--white);
-  box-shadow:none;
-}
-.btn-primary:hover{ background: linear-gradient(180deg, var(--blue-600), #061826); }
-
-.btn-outline-primary{
-  color: var(--blue);
-  border-color: var(--blue);
-}
-.btn-outline-primary:hover{
-  background: rgba(11,43,72,0.06);
-}
-
-/* Danger / red button for cancellations etc */
-.btn-danger{
-  background: linear-gradient(180deg, var(--red), var(--red-700));
-  border-color: var(--red-700);
-  color: var(--white);
-}
-.btn-danger:hover{ filter:brightness(.95); }
-
-/* Badge for booking status */
-.badge-booked{ background:#eaf7ef; color:#0b6a47; border:1px solid #cfead6; }
-.badge-cancelled{ background:#fff1f0; color:#8a1b1b; border:1px solid #ffd6d6; }
-
-/* Messages (partials use bootstrap alerts) */
-.alert-info{ background: #eef7ff; border-color:#d6efff; color:var(--blue); }
-.alert-success{ background:#eef8f1; border-color:#d7f0de; color:#0b6a47; }
-.alert-danger{ background:#fff0f0; border-color:#ffd6d6; color:#a40000; }
-
-/* Layout tweaks */
-.container{ max-width:1000px; }
-main.container{ padding-top:1.2rem; padding-bottom:2rem; }
-
-/* Slot card grid */
-.slot-grid{
-  display:grid;
-  grid-template-columns: repeat(auto-fit,minmax(260px,1fr));
-  gap:1rem;
-}
-.slot-card .card-body{ display:flex; flex-direction:column; gap:.6rem; }
-.slot-meta{ color:var(--muted); font-size:.95rem; }
-.slot-actions{ margin-top:auto; display:flex; gap:.5rem; justify-content:flex-end; }
-
-/* Responsive tweaks */
-@media (max-width:576px){
-  .site-header .brand span{ display:none; }
-}
+   :root{
+    --ferit-red: #b3202a;      /* smirena crvena */
+    --ferit-red-2: #d34b54;    /* hover */
+    --ferit-blue: #163a6b;     /* tamnija plava */
+    --ink: #0f172a;
+    --muted: #64748b;
+    --bg: #ffffff;
+    --surface: #ffffff;
+    --border: #e5e7eb;
+    --shadow: 0 10px 25px rgba(2, 6, 23, 0.08);
+    --radius: 14px;
+  }
+  
+  body{
+    background: var(--bg);
+    color: var(--ink);
+  }
+  
+  a{
+    color: var(--ferit-blue);
+    text-decoration: none;
+  }
+  a:hover{
+    color: #0f2f57;
+    text-decoration: underline;
+  }
+  
+  /* layout */
+  .page-wrap{
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  main{ flex: 1; }
+  
+  .container-narrow{ max-width: 980px; }
+  
+  /* navbar */
+  .navbar{
+    background: var(--surface) !important;
+    border-bottom: 1px solid var(--border);
+  }
+  .navbar-brand{
+    color: var(--ferit-blue) !important;
+    letter-spacing: .2px;
+  }
+  .navbar-brand .brand-dot{
+    color: var(--ferit-red);
+  }
+  .navbar .nav-link{
+    color: var(--ink) !important;
+  }
+  .navbar .nav-link:hover{
+    color: var(--ferit-blue) !important;
+  }
+  
+  /* cards / list */
+  .card{
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+  }
+  .card.shadow-sm{
+    box-shadow: var(--shadow);
+  }
+  .list-group-item{
+    border-color: var(--border);
+  }
+  .list-group-item:first-child{
+    border-top-left-radius: var(--radius);
+    border-top-right-radius: var(--radius);
+  }
+  .list-group-item:last-child{
+    border-bottom-left-radius: var(--radius);
+    border-bottom-right-radius: var(--radius);
+  }
+  
+  /* buttons */
+  .btn-primary{
+    background-color: var(--ferit-red);
+    border-color: var(--ferit-red);
+  }
+  .btn-primary:hover,
+  .btn-primary:focus{
+    background-color: var(--ferit-red-2);
+    border-color: var(--ferit-red-2);
+  }
+  
+  .btn-outline-primary{
+    color: var(--ferit-red);
+    border-color: rgba(179, 32, 42, 0.45);
+  }
+  .btn-outline-primary:hover,
+  .btn-outline-primary:focus{
+    background-color: rgba(179, 32, 42, 0.08);
+    border-color: rgba(179, 32, 42, 0.65);
+    color: var(--ferit-red);
+  }
+  
+  .btn-outline-secondary{
+    color: var(--ferit-blue);
+    border-color: rgba(22, 58, 107, 0.35);
+  }
+  .btn-outline-secondary:hover,
+  .btn-outline-secondary:focus{
+    background-color: rgba(22, 58, 107, 0.08);
+    border-color: rgba(22, 58, 107, 0.55);
+    color: var(--ferit-blue);
+  }
+  
+  /* badges */
+  .badge.bg-success{
+    background-color: rgba(22, 58, 107, 0.12) !important;
+    color: var(--ferit-blue) !important;
+    border: 1px solid rgba(22, 58, 107, 0.25);
+  }
+  .badge.bg-secondary{
+    background-color: rgba(100, 116, 139, 0.12) !important;
+    color: #334155 !important;
+    border: 1px solid rgba(100, 116, 139, 0.22);
+  }
+  
+  /* alerts */
+  .alert{
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+  }
+  .alert-info{
+    background: rgba(22, 58, 107, 0.06);
+    color: var(--ferit-blue);
+  }
+  .alert-success{
+    background: rgba(179, 32, 42, 0.06);
+    color: var(--ferit-red);
+  }
+  
+  /* forms */
+  .form-control, .form-select{
+    border-radius: 12px;
+    border-color: var(--border);
+  }
+  .form-control:focus, .form-select:focus{
+    border-color: rgba(179, 32, 42, 0.45);
+    box-shadow: 0 0 0 .2rem rgba(179, 32, 42, 0.12);
+  }
+  
+  /* hero */
+  .hero{
+    padding: 28px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: linear-gradient(180deg, rgba(22, 58, 107, 0.06), rgba(179, 32, 42, 0.03));
+  }
+  .hero .lead{ color: var(--muted); }

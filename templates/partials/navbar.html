@@ -1,6 +1,12 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
-  <div class="container">
-    <a class="navbar-brand fw-semibold" href="{% url 'booking:home' %}">FERIT konzultacije</a>
+{% load static %}
+
+<nav class="navbar navbar-expand-lg border-bottom">
+  <div class="container container-narrow">
+
+    <a class="navbar-brand fw-semibold d-flex align-items-center gap-2" href="{% url 'booking:home' %}">
+      <img src="{% static 'images/logo.png' %}" alt="FERIT logo" style="height: 28px; width: auto;">
+      <span>FERIT<span class="brand-dot">•</span>konzultacije</span>
+    </a>
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMain"
             aria-controls="navMain" aria-expanded="false" aria-label="Toggle navigation">
@@ -43,7 +49,7 @@
             </li>
           {% endif %}
 
-          <li class="nav-item">
+          <li class="nav-item ms-lg-2">
             <form method="post" action="{% url 'accounts:logout' %}" class="d-inline">
               {% csrf_token %}
               <button type="submit" class="btn btn-outline-secondary btn-sm">Odjava</button>
@@ -52,8 +58,8 @@
 
         {% else %}
 
-          <li class="nav-item">
-            <a class="btn btn-outline-primary btn-sm" href="{% url 'accounts:login' %}">Prijava</a>
+          <li class="nav-item ms-lg-2">
+            <a class="btn btn-outline-secondary btn-sm" href="{% url 'accounts:login' %}">Prijava</a>
           </li>
           <li class="nav-item">
             <a class="btn btn-primary btn-sm" href="{% url 'accounts:register' %}">Registracija</a>
@@ -62,5 +68,6 @@
         {% endif %}
       </ul>
     </div>
+
   </div>
 </nav>
