@@ -80,7 +80,10 @@ class SlotListView(ListView):
     model = AvailabilitySlot
     template_name = "booking/slot_list.html"
     context_object_name = "slots"
-    queryset = AvailabilitySlot.objects.filter(is_active=True, end_at__gt=None).order_by("start_at")
+
+    def get_queryset(self):
+        # Prikaži samo aktivne termine koji još nisu završili
+        return AvailabilitySlot.objects.filter(is_active=True, end_at__gt=timezone.now()).order_by("start_at")
 
 
 class SlotDetailView(DetailView):

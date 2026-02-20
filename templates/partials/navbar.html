@@ -10,7 +10,12 @@
         <li class="nav-item"><a class="nav-link" href="{% url 'booking:slot_list' %}">Termini</a></li>
         {% if user.is_authenticated %}
           <li class="nav-item"><a class="nav-link" href="{% url 'booking:my_bookings' %}">Moje rezervacije</a></li>
-          <li class="nav-item"><a class="nav-link" href="{% url 'logout' %}">Logout</a></li>
+          <li class="nav-item">
+            <form action="{% url 'logout' %}" method="post" class="d-inline">
+              {% csrf_token %}
+              <button type="submit" class="nav-link btn btn-link p-0" style="display:inline;">Logout</button>
+            </form>
+          </li>
         {% else %}
           <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">Login</a></li>
         {% endif %}
