@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Moje rezervacije{% endblock %}
+
+{% block content %}
+<div class="container">
+
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="h4 mb-0">Moje rezervacije</h1>
+    <a class="btn btn-outline-primary btn-sm" href="{% url 'booking:home' %}">Natrag na termine</a>
+  </div>
+
+  {% if bookings %}
+    <div class="list-group">
+      {% for b in bookings %}
+        <div class="list-group-item d-flex justify-content-between align-items-center">
+          <div>
+            <div class="fw-semibold">{{ b.slot.mentor.username }}</div>
+            <div class="text-muted small">
+              {{ b.slot.start_at|date:"d.m.Y. H:i" }} – {{ b.slot.end_at|date:"H:i" }}
+            </div>
+            <div class="small">
+              Status: <span class="badge bg-secondary">{{ b.get_status_display }}</span>
+            </div>
+          </div>
+          <div class="text-muted small">
+            Kreirano: {{ b.created_at|date:"d.m.Y. H:i" }}
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="alert alert-info">
+      Trenutno nemaš rezervacija.
+    </div>
+  {% endif %}
+
+</div>
+{% endblock %}

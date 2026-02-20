@@ -53,7 +53,12 @@
           {% endif %}
 
           <li class="nav-item">
-            <a class="btn btn-outline-secondary btn-sm" href="{% url 'accounts:logout' %}">Odjava</a>
+            <form method="post" action="{% url 'accounts:logout' %}" class="d-inline">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-outline-secondary btn-sm">
+                Odjava
+              </button>
+            </form>
           </li>
 
         {% else %}

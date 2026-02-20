@@ -34,3 +34,17 @@ python manage.py createsuperuser
 ## Napomena o grupama (mentor/student)
 - Registracija dodaje korisnika u grupu **student**
 - Mentora dodaješ tako da korisniku u adminu dodaš grupu **mentor**
+
+
+
+Admin:
+  username: admin
+  password: admin123
+
+Mentor:
+  username: mentor1
+  password: mentor123
+
+Student:
+  username: student1
+  password: student123

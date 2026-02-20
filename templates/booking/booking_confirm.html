@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Potvrda rezervacije{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 700px;">
+
+  <h1 class="h4 mb-3">Potvrda rezervacije</h1>
+
+  <div class="card shadow-sm mb-3">
+    <div class="card-body">
+      <div class="mb-2"><span class="text-muted">Mentor:</span> <b>{{ slot.mentor.username }}</b></div>
+      <div class="mb-2">
+        <span class="text-muted">Termin:</span>
+        <b>{{ slot.start_at|date:"d.m.Y. H:i" }}</b> – <b>{{ slot.end_at|date:"H:i" }}</b>
+      </div>
+      <div class="text-muted small">
+        Klikom na “Potvrdi rezervaciju” rezerviraš termin.
+      </div>
+    </div>
+  </div>
+
+  <form method="post" class="d-flex gap-2">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-primary">Potvrdi rezervaciju</button>
+    <a class="btn btn-outline-secondary" href="{% url 'booking:home' %}">Odustani</a>
+  </form>
+
+</div>
+{% endblock %}
