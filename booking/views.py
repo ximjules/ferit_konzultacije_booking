@@ -4,9 +4,9 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ValidationError
+from django.db.models import Count
 from django.http import HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect, render
-from django.urls import reverse
 from django.utils import timezone
 from django.views.generic import DetailView, ListView
 
@@ -20,7 +20,12 @@ def mentor_slots(request):
     if not is_mentor(request.user):
         return HttpResponseForbidden("Nemaš pristup ovoj stranici.")
 
-    slots = AvailabilitySlot.objects.filter(mentor=request.user).order_by("start_at")
+    # dodamo info ima li booking
+    slots = (
+        AvailabilitySlot.objects.filter(mentor=request.user)
+        .annotate(bookings_count=Count("bookings"))
+        .order_by("start_at")
+    )
     return render(request, "booking/mentor_slots.html", {"slots": slots})
 
 
@@ -37,7 +42,6 @@ def mentor_add_slot(request):
             messages.error(request, "Molim unesi početak i kraj termina.")
             return redirect("booking:mentor_add_slot")
 
-        # očekujemo format "YYYY-MM-DDTHH:MM" iz <input type="datetime-local">
         try:
             start_dt = datetime.fromisoformat(start_at_raw)
             end_dt = datetime.fromisoformat(end_at_raw)
@@ -45,7 +49,6 @@ def mentor_add_slot(request):
             messages.error(request, "Neispravan format datuma.")
             return redirect("booking:mentor_add_slot")
 
-        # učini aware datetime ako je naive
         if timezone.is_naive(start_dt):
             start_dt = timezone.make_aware(start_dt)
         if timezone.is_naive(end_dt):
@@ -55,7 +58,6 @@ def mentor_add_slot(request):
             messages.error(request, "Početak mora biti prije kraja termina.")
             return redirect("booking:mentor_add_slot")
 
-        # provjeri preklapanje s već postojećim terminima mentora
         overlap = AvailabilitySlot.objects.filter(
             mentor=request.user,
             start_at__lt=end_dt,
@@ -82,13 +84,11 @@ class SlotListView(ListView):
     context_object_name = "slots"
 
     def get_queryset(self):
-        # Prikaži samo aktivne termine koji nisu završili i nisu rezervirani
+        # aktivni termini koji nisu završili i NEMAJU booking
         return (
-            AvailabilitySlot.objects.filter(
-                is_active=True,
-                end_at__gt=timezone.now(),
-                is_booked=False,
-            )
+            AvailabilitySlot.objects.filter(is_active=True, end_at__gt=timezone.now())
+            .annotate(bookings_count=Count("bookings"))
+            .filter(bookings_count=0)
             .select_related("mentor")
             .order_by("start_at")
         )
@@ -104,12 +104,11 @@ class SlotDetailView(DetailView):
 def book_slot(request, slot_pk):
     slot = get_object_or_404(AvailabilitySlot, pk=slot_pk)
 
-    # Samo studenti mogu rezervirati termine
     if not is_student(request.user):
         return HttpResponseForbidden("Samo studenti mogu rezervirati termine.")
 
-    # Ne dopusti rezervaciju već rezerviranog termina
-    if getattr(slot, "is_booked", False):
+    # ako već postoji booking -> ne može se rezervirati
+    if Booking.objects.filter(slot=slot).exists():
         messages.error(request, "Ovaj termin je već rezerviran.")
         return redirect("booking:home")
 
@@ -143,13 +142,10 @@ class MyBookingsView(LoginRequiredMixin, ListView):
 
 
 def home(request):
-    # home je "landing" + lista dostupnih termina
     slots = (
-        AvailabilitySlot.objects.filter(
-            is_active=True,
-            end_at__gt=timezone.now(),
-            is_booked=False,
-        )
+        AvailabilitySlot.objects.filter(is_active=True, end_at__gt=timezone.now())
+        .annotate(bookings_count=Count("bookings"))
+        .filter(bookings_count=0)
         .select_related("mentor")
         .order_by("start_at")
     )

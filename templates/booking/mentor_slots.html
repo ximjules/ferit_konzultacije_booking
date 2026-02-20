@@ -14,7 +14,7 @@
         <div>
           <div class="fw-semibold">{{ s.start_at|date:"d.m.Y. H:i" }} — {{ s.end_at|date:"H:i" }}</div>
           <div class="text-muted small">
-            {% if s.is_booked %}Rezervirano{% else %}Slobodno{% endif %}
+            {% if s.bookings_count|default:0 > 0 %}Rezervirano{% else %}Slobodno{% endif %}
           </div>
         </div>
       </div>
