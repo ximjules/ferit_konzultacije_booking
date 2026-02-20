@@ -1,15 +1,33 @@
 {% extends "base.html" %}
 {% block content %}
-<h1>Available slots</h1>
-<ul>
+<h1 class="mb-4">Dostupni termini</h1>
+
+<div class="slot-grid">
   {% for slot in slots %}
-    <li>
-      <a href="{% url 'booking:slot_detail' slot.pk %}">
-        {{ slot.mentor }} — {{ slot.start_at|date:"Y-m-d H:i" }} - {{ slot.end_at|time:"H:i" }}
-      </a>
-    </li>
+    <div class="card slot-card">
+      <div class="card-body">
+        <div>
+          <strong>{{ slot.mentor }}</strong>
+          <div class="slot-meta">{{ slot.start_at|date:"Y-m-d H:i" }} — {{ slot.end_at|time:"H:i" }}</div>
+        </div>
+
+        <div class="slot-actions">
+          <a href="{% url 'booking:slot_detail' slot.pk %}" class="btn btn-outline-primary btn-sm">Detalji</a>
+          {% if user.is_authenticated %}
+            <form action="{% url 'booking:book_slot' slot.pk %}" method="post" style="display:inline;">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-primary btn-sm">Rezerviraj</button>
+            </form>
+          {% else %}
+            <a href="{% url 'login' %}?next={% url 'booking:slot_detail' slot.pk %}" class="btn btn-primary btn-sm">Prijavi se za rezervaciju</a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
   {% empty %}
-    <li>No slots available.</li>
+    <div class="card">
+      <div class="card-body">Trenutno nema dostupnih termina.</div>
+    </div>
   {% endfor %}
-</ul>
+</div>
 {% endblock %}

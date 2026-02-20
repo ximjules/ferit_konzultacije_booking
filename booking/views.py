@@ -10,7 +10,7 @@ from django.urls import reverse
 from django.core.exceptions import ValidationError
 
 from .models import AvailabilitySlot, Booking
-from accounts.views import is_mentor
+from .utils import is_mentor
 from datetime import datetime
 from .forms import BookingForm
 

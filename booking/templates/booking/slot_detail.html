@@ -1,14 +1,20 @@
 {% extends "base.html" %}
 {% block content %}
-<h1>Slot detail</h1>
-<p>Mentor: {{ slot.mentor }}</p>
-<p>When: {{ slot.start_at|date:"Y-m-d H:i" }} - {{ slot.end_at|time:"H:i" }}</p>
-{% if user.is_authenticated %}
-  <form action="{% url 'booking:book_slot' slot.pk %}" method="post">
-    {% csrf_token %}
-    <button type="submit">Book this slot</button>
-  </form>
-{% else %}
-  <p><a href="{% url 'login' %}">Log in</a> to book.</p>
-{% endif %}
+<div class="card">
+  <div class="card-body">
+    <h3 class="card-title">Termin</h3>
+    <p><strong>Mentor:</strong> {{ slot.mentor }}</p>
+    <p><strong>Vrijeme:</strong> {{ slot.start_at|date:"Y-m-d H:i" }} — {{ slot.end_at|time:"H:i" }}</p>
+
+    {% if user.is_authenticated %}
+      <form action="{% url 'booking:book_slot' slot.pk %}" method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-primary">Rezerviraj ovaj termin</button>
+        <a href="{% url 'booking:slot_list' %}" class="btn btn-outline-primary ms-2">Povratak</a>
+      </form>
+    {% else %}
+      <p><a href="{% url 'login' %}?next={% url 'booking:slot_detail' slot.pk %}" class="btn btn-primary">Prijavi se</a> da rezerviraš termin.</p>
+    {% endif %}
+  </div>
+</div>
 {% endblock %}

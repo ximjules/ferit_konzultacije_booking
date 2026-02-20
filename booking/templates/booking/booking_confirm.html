@@ -1,11 +1,15 @@
 {% extends "base.html" %}
 {% block content %}
-<h1>Confirm booking</h1>
-<p>Slot: {{ slot.mentor }} — {{ slot.start_at|date:"Y-m-d H:i" }}</p>
-<form method="post">
-  {% csrf_token %}
-  {{ form.non_field_errors }}
-  <button type="submit">Confirm booking</button>
-  <a href="{% url 'booking:slot_detail' slot.pk %}">Cancel</a>
-</form>
+<div class="card">
+  <div class="card-body">
+    <h3>Potvrdi rezervaciju</h3>
+    <p>Slot: <strong>{{ slot.mentor }}</strong> — {{ slot.start_at|date:"Y-m-d H:i" }}</p>
+    <form method="post">
+      {% csrf_token %}
+      {{ form.non_field_errors }}
+      <button type="submit" class="btn btn-primary">Potvrdi rezervaciju</button>
+      <a href="{% url 'booking:slot_detail' slot.pk %}" class="btn btn-outline-primary ms-2">Poništi</a>
+    </form>
+  </div>
+</div>
 {% endblock %}

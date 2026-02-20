@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Moje rezervacije</h1>
+<ul class="list-group">
+  {% for b in bookings %}
+    <li class="list-group-item d-flex justify-content-between align-items-center">
+      <div>
+        <div><strong>{{ b.slot.mentor }}</strong></div>
+        <div class="slot-meta">{{ b.slot.start_at|date:"Y-m-d H:i" }}</div>
+      </div>
+      <div class="text-end">
+        {% if b.status == 'booked' %}
+          <span class="badge badge-booked p-2">Booked</span>
+        {% else %}
+          <span class="badge badge-cancelled p-2">Cancelled</span>
+        {% endif %}
+        <div class="text-muted small mt-1">{{ b.created_at|date:"Y-m-d H:i" }}</div>
+      </div>
+    </li>
+  {% empty %}
+    <li class="list-group-item">Nema rezervacija.</li>
+  {% endfor %}
+</ul>
+{% endblock %}
